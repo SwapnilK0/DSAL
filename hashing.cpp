@@ -83,6 +83,7 @@ Hashing hash;
 		case 59: for(int k=0;k<10;k++){
 				hash.Hash_Table[k]=-1;
 				}
+				break;
 		case 60: exit(0);
 				break;
 		default: cout<<"Invalid input";

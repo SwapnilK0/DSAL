@@ -1,95 +1,74 @@
-#include<iostream>
+// C++ program for expression tree
+#include <bits/stdc++.h>
 #include<stack>
-
 using namespace std;
-
-struct Node{
-	char data;
-	Node* left;
-	Node* right;
-	};
-
-class ExpTree{
-	public:
-	Node* root;
-
-	bool isOperator(char x);
-	Node* createNode(char data);
-	Node* createTree(string s);
-	void Delete(Node* root);
-	void PostOrder(Node* root);
+class node {
+public:
+	char value;
+	node* left;
+	node* right;
+	
+	node(char c)
+	{
+		this->value = c;
+		left = NULL;
+		right = NULL;
+	}
+	node()
+	{
+		left = NULL;
+		right = NULL;
+	}
+	
+	
 };
 
-bool ExpTree:: isOperator(char x){
-	return x == '+' || x== '-' || x== '/' || x== '*' ;
-}
-
-Node* ExpTree::createNode(char data){
-	Node* newnode = new Node();
-	if(!newnode){
-		cout<<"\n Memory Error";
-		return NULL;
-	}
-	else{
-		newnode->data = data;
-		newnode->left = newnode->right = NULL;	
-	}
-	return newnode;
-}
-
-Node* ExpTree::createTree(string s){
-	stack<Node*> st;
-	int length = s.size();
-	for(int i = length -1; i>=0 ; i--){
-		if(isOperator(s[i])){
-			Node* op1 = st.top();
-			st.pop();
-			Node* op2 = st.top();
-			st.pop();
-
-			Node* newnode = createNode(s[i]);
-			newnode->left = op1;
-			newnode->right = op2;
-
-			st.push(newnode);
-		}
-		else{
-			Node* newnode = createNode(s[i]);
-			st.push(newnode);
+class expression_tree {
+public:
+	void inorder(node* x)
+	{
+		// cout<<"Tree in InOrder Traversal is: "<<endl;
+		if (x == NULL)
+			return;
+		else {
+			inorder(x->left);
+			cout << x->value << " ";
+			inorder(x->right);
 		}
 	}
-	
+};
 
+int main()
+{
+	string s = "ABC*+D/";
+	// If you wish take input from user:
+	//cout << "Insert Postorder Expression: " << endl;
+	//cin >> s;
 
-	return st.top();
+	stack<node*> e;
+	expression_tree a;
+	node *op1, *op2, *newnode;
+    
+	int l = s.length();
+	for (int i = 0; i < l; i++) {
+		
+		if (s[i] == '+' || s[i] == '-' || s[i] == '*'
+			|| s[i] == '/' || s[i] == '^') {
+			newnode = new node(s[i]);
+			op1 = e.top();
+            e.pop();
+			op2 = e.top();
+            e.pop();
+			newnode->left = op2;
+			newnode->right = op1;
+			e.push(newnode);
+		}
+		else {
+			newnode = new node(s[i]);
+			e.push(newnode);
+		}
+	}
+	cout << " The Inorder Traversal of Expression Tree: ";
+	a.inorder(newnode);
+	return 0;
 }
-
-void ExpTree::PostOrder(Node* root){
-	if(root){
-		PostOrder(root->left);
-		PostOrder(root->right);
-		cout<<root->data<<" ";	
-	}	
-}
-
-void ExpTree::Delete(Node* root){
-	if(!root) return;
-	Delete(root->left);
-	Delete(root->right);
-	delete root;
-}
-
-
-int main(){
-ExpTree tree;
-string prefix;
-cout<<"\n Enter Prefix String: ";
-cin>>prefix;
-
-tree.root = tree.createTree(prefix);
-
-cout<<"\n PostOrder Traversal: ";
-tree.PostOrder(tree.root);
-tree.Delete(tree.root);
-	
-return 0;}
